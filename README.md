@@ -28,4 +28,5 @@ Assignments- Python- Python reading on analysis and visuals of the data.ipynb- T
 ## Usage
 1. Clone the repository:
    ```bash
-   Git clone gitgithub.com/YourUser name/Supermart- Sales- Analysis.git.
+   Git clone gitgithub.com/Fizza Fatima
+/Supermart- Sales- Analysis.git.
