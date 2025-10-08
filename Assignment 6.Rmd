@@ -1,0 +1,91 @@
+---
+title: "Assignment 6"
+Author: "Fizza Fatima"
+output: html_document
+date: "2025-10-07"
+---
+
+```{r setup, include=FALSE}
+# Load necessary libraries
+library(ggplot2)  # For data visualization
+library(dplyr)    # For data manipulation
+library(lubridate) # For date handling
+```
+
+
+```{r}
+# Load the dataset
+data_path <- "C:/Assignment 6/Supermart Grocery Sales - Retail Analytics Dataset.csv"
+sales_data <- read.csv(data_path)
+
+# View the first few rows of the data
+head(sales_data)
+```
+It is the step that loads the dataset in the specified file path (.csv) to the sales-data variable as a data frame.
+```{r}
+# Data Cleaning
+# Convert 'Order Date' to Date format
+sales_data$Order.Date <- dmy(sales_data$Order.Date)  # 'dmy' is used for dates like "DD-MM-YYYY"
+
+# Remove rows with missing data
+sales_data <- sales_data %>% na.omit()
+
+# Create a new column for Profit-to-Sales ratio
+sales_data$Profit_To_Sales <- sales_data$Profit / sales_data$Sales
+```
+dmy() converts the Order.Date column from text to Date format (DD-MM-YYYY).
+na.omit() removes rows with any missing values.
+```{r}
+# Total Sales by Category
+# Check column names
+colnames(sales_data)
+
+# Check the structure of the dataset
+str(sales_data)
+
+# Convert 'Sales' to numeric (if it's not already)
+sales_data$Sales <- as.numeric(sales_data$Sales)
+
+# Convert 'Category' to factor (if it's not already)
+sales_data$Category <- as.factor(sales_data$Category)
+
+# Check for missing values
+sum(is.na(sales_data$Sales))  # Number of missing values in Sales
+sum(is.na(sales_data$Category))  # Number of missing values in Category
+
+# Remove rows with missing Sales or Category values
+sales_data <- sales_data %>% filter(!is.na(Sales) & !is.na(Category))
+
+# Aggregate sales by category
+category_sales <- sales_data %>%
+  group_by(Category) %>%
+  summarise(Total_Sales = sum(Sales, na.rm = TRUE))
+
+# Check the aggregated data
+head(category_sales)
+
+
+# Bar chart: Total Sales by Category
+ggplot(data = category_sales, aes(x = Category, y = Total_Sales, fill = Category)) +
+  geom_bar(stat = "identity") + 
+  labs(title = "Total Sales by Category", x = "Category", y = "Sales") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate category names
+
+```
+ggplot() sets up the plot, specifying Category as the x-axis and Total_Sales as the y-axis.
+geom_bar(stat = "identity") creates a bar chart where the height of each bar is the Total_Sales for each category.
+labs() adds the title and axis labels.
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) rotates the x-axis labels for better readability.
+```{r}
+# Scatter plot: Sales vs Profit
+ggplot(data = sales_data, aes(x = Sales, y = Profit, color = Category)) +
+  geom_point() +
+  labs(title = "Sales vs Profit", x = "Sales", y = "Profit") +
+  theme_minimal()
+
+```
+ggplot() sets up the plot, specifying Sales as the x-axis and Profit as the y-axis.
+geom_point() creates a scatter plot, with each point representing a sales-profit pair.
+color = Category assigns different colors to each category for better differentiation.
+labs() adds the title and axis labels.
+theme_minimal() gives the plot a minimalistic style.
